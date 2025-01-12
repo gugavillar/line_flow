@@ -15,6 +15,23 @@ const eslintConfig = [
 		'next/typescript',
 		'plugin:tailwindcss/recommended'
 	),
+	{
+		rules: {
+			'@typescript-eslint/no-unused-vars': [
+				'error',
+				{
+					ignoreRestSiblings: true,
+				},
+			],
+
+			'tailwindcss/no-custom-classname': [
+				'warn',
+				{
+					whitelist: ['^hs-.+', 'custom-class'],
+				},
+			],
+		},
+	},
 ]
 
 export default eslintConfig

@@ -1,6 +1,10 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
+
+import { PrelineScript } from '@/scripts'
+
 import './globals.css'
+import { Navbar } from '@/components/Molecules'
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',
@@ -25,9 +29,11 @@ export default function RootLayout({
 	return (
 		<html lang="pt-BR">
 			<body
-				className={`${geistSans.variable} ${geistMono.variable} flex w-dvw flex-col antialiased`}
+				className={`${geistSans.variable} ${geistMono.variable} flex h-dvh w-dvw flex-col antialiased`}
 			>
+				<Navbar label="Line Flow" links={[{ children: 'Home', href: '/' }]} />
 				{children}
+				<PrelineScript />
 			</body>
 		</html>
 	)
