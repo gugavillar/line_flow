@@ -1,6 +1,7 @@
 export * from './Button'
 export * from './Card'
 export * from './CurrentCode'
+export * from './InfoCodeStart'
 export * from './LogoLink'
 export * from './MenuLink'
 export * from './PassedCode'
