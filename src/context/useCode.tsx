@@ -21,6 +21,7 @@ import {
 } from 'firebase/database'
 
 import { database } from '@/services/firebase'
+import { ENDTYPE } from '@/constants/globals'
 
 export type Codes = {
 	number: number
@@ -28,6 +29,7 @@ export type Codes = {
 	finished_at: string | null
 	started_at: string | null
 	guiche: 1 | 2 | 3
+	end_type: `${ENDTYPE}`
 }
 
 export type CodeFromFirebase = Codes & {
@@ -39,10 +41,12 @@ type ContextType = {
 		guiche: Codes['guiche'],
 		number: number
 	) => Promise<CodeFromFirebase>
-	codes: Array<Codes>
+	codes: Array<CodeFromFirebase>
 	startService: (refUrl: string) => Promise<CodeFromFirebase>
 	setCalledCode: Dispatch<SetStateAction<CodeFromFirebase | null>>
 	calledCode: CodeFromFirebase | null
+	endService: (refUrl: string, endType: Codes['end_type']) => Promise<void>
+	recallCode: (refUrl: string) => Promise<void>
 }
 
 const CodeContext = createContext<ContextType>({} as ContextType)
@@ -58,15 +62,16 @@ const isExistThisNumber = async (number: number) => {
 }
 
 export function CodesProvider({ children }: { children: ReactNode }) {
-	const [codes, setCodes] = useState<Array<Codes>>([])
+	const [codes, setCodes] = useState<Array<CodeFromFirebase>>([])
 	const [calledCode, setCalledCode] = useState<CodeFromFirebase | null>(null)
 
 	useEffect(() => {
 		const codesRef = ref(database, 'codes')
 		onValue(codesRef, (snapshot) => {
-			const newCodes: Array<Codes> = []
+			const newCodes: Array<CodeFromFirebase> = []
 			snapshot.forEach((childSnapshot) => {
-				const childData = childSnapshot.val()
+				const childKey = childSnapshot.key
+				const childData = { id: childKey, ...childSnapshot.val() }
 				newCodes.push(childData)
 			})
 			setCodes(newCodes)
@@ -114,9 +119,34 @@ export function CodesProvider({ children }: { children: ReactNode }) {
 		}
 	}
 
+	const endService = async (refUrl: string, endType: Codes['end_type']) => {
+		const newCode = ref(database, `codes/${refUrl}`)
+
+		await update(newCode, {
+			finished_at: new Date().toISOString(),
+			end_type: endType,
+		})
+	}
+
+	const recallCode = async (refUrl: string) => {
+		const newCode = ref(database, `codes/${refUrl}`)
+
+		await update(newCode, {
+			called_at: new Date().toISOString(),
+		})
+	}
+
 	return (
 		<CodeContext.Provider
-			value={{ codes, callCode, startService, calledCode, setCalledCode }}
+			value={{
+				codes,
+				callCode,
+				startService,
+				calledCode,
+				setCalledCode,
+				endService,
+				recallCode,
+			}}
 		>
 			{children}
 		</CodeContext.Provider>

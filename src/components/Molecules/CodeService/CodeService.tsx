@@ -1,14 +1,23 @@
 import { Button, Card, InfoCodeStart } from '@/components/Atoms'
-import { CodeFromFirebase, useCode } from '@/context/useCode'
+import { ENDTYPE } from '@/constants/globals'
+import { CodeFromFirebase, Codes, useCode } from '@/context/useCode'
 
 export const CodeService = ({ code }: { code: CodeFromFirebase | null }) => {
-	const { startService, setCalledCode } = useCode()
+	const { startService, setCalledCode, endService } = useCode()
 
 	if (!code) return null
 
 	const handleStartService = async (codeId: string) => {
 		const response = await startService(codeId)
 		setCalledCode(response)
+	}
+
+	const handleEndService = async (
+		codeId: string,
+		endType: Codes['end_type']
+	) => {
+		await endService(codeId, endType)
+		setCalledCode(null)
 	}
 
 	return (
@@ -24,12 +33,16 @@ export const CodeService = ({ code }: { code: CodeFromFirebase | null }) => {
 				>
 					Iniciar atendimento
 				</Button>
-				<Button className="bg-red-100 text-red-800 hover:bg-red-200 focus:bg-red-200">
+				<Button
+					className="bg-red-100 text-red-800 hover:bg-red-200 focus:bg-red-200"
+					onClick={() => handleEndService(code.id, ENDTYPE.FINISH)}
+				>
 					Finalizar atendimento
 				</Button>
 				<Button
 					className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200 focus:bg-yellow-200"
 					disabled={!!code.started_at}
+					onClick={() => handleEndService(code.id, ENDTYPE.CANCEL)}
 				>
 					Não compareceu
 				</Button>
