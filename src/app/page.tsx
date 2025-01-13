@@ -12,7 +12,7 @@ export default function PanelPage() {
 					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
 				/>
 			</div>
-			<CurrentCode code="005" guiche="Guichê 01" />
+			<CurrentCode />
 			<div className="flex h-full flex-col p-4">
 				<h3 className="text-3xl font-semibold">Senhas anteriores</h3>
 				<div className="flex flex-1 items-center justify-center gap-16 px-4">
