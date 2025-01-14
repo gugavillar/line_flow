@@ -7,7 +7,7 @@ export default function ServiceLayout({
 }) {
 	return (
 		<>
-			<Navbar label="Line Flow" links={[{ children: 'Home', href: '/' }]} />
+			<Navbar label="Line Flow" />
 			{children}
 		</>
 	)

@@ -36,6 +36,7 @@ export const CodeService = ({ code }: { code: CodeFromFirebase | null }) => {
 				<Button
 					className="bg-red-100 text-red-800 hover:bg-red-200 focus:bg-red-200"
 					onClick={() => handleEndService(code.id, ENDTYPE.FINISH)}
+					disabled={!code.started_at}
 				>
 					Finalizar atendimento
 				</Button>

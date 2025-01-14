@@ -8,6 +8,12 @@ export default {
 		'./src/app/**/*.{js,ts,jsx,tsx,mdx}',
 		'./node_modules/preline/preline.js',
 	],
-	theme: {},
+	theme: {
+		extend: {
+			colors: {
+				brand: '#236599',
+			},
+		},
+	},
 	plugins: [require('preline/plugin')],
 } satisfies Config

@@ -47,6 +47,8 @@ type ContextType = {
 	calledCode: CodeFromFirebase | null
 	endService: (refUrl: string, endType: Codes['end_type']) => Promise<void>
 	recallCode: (refUrl: string) => Promise<void>
+	handleSaveGuicheNumber: (guicheNumber: number) => void
+	guicheNumber: number | null
 }
 
 const CodeContext = createContext<ContextType>({} as ContextType)
@@ -63,6 +65,7 @@ const isExistThisNumber = async (number: number) => {
 
 export function CodesProvider({ children }: { children: ReactNode }) {
 	const [codes, setCodes] = useState<Array<CodeFromFirebase>>([])
+	const [guicheNumber, setGuicheNumber] = useState<number | null>(null)
 	const [calledCode, setCalledCode] = useState<CodeFromFirebase | null>(null)
 
 	useEffect(() => {
@@ -136,6 +139,29 @@ export function CodesProvider({ children }: { children: ReactNode }) {
 		})
 	}
 
+	useEffect(() => {
+		const loadModal = async () => {
+			if (guicheNumber) return
+
+			const guicheNumberFromLocalStorage = localStorage.getItem('guiche')
+
+			if (guicheNumberFromLocalStorage) {
+				return setGuicheNumber(Number(guicheNumberFromLocalStorage))
+			}
+
+			const overlay = await import('preline/preline')
+			overlay.HSOverlay.open('#guiche-modal')
+		}
+
+		loadModal()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
+
+	const handleSaveGuicheNumber = (guicheNumber: number) => {
+		localStorage.setItem('guiche', String(guicheNumber))
+		setGuicheNumber(guicheNumber)
+	}
+
 	return (
 		<CodeContext.Provider
 			value={{
@@ -146,6 +172,8 @@ export function CodesProvider({ children }: { children: ReactNode }) {
 				setCalledCode,
 				endService,
 				recallCode,
+				handleSaveGuicheNumber,
+				guicheNumber,
 			}}
 		>
 			{children}

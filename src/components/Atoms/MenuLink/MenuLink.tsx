@@ -6,7 +6,7 @@ export const MenuLink = ({
 }: LinkProps & { children: string }) => {
 	return (
 		<Link
-			className="font-medium text-gray-600 hover:text-gray-900 focus:outline-none"
+			className="font-medium text-white hover:text-gray-900 focus:outline-none"
 			{...props}
 		>
 			{children}
