@@ -8,6 +8,7 @@ import { CodesProvider } from '@/context/useCode'
 
 const roboto = Roboto({
 	weight: ['400', '500', '700', '900'],
+	subsets: ['latin'],
 })
 
 export const metadata: Metadata = {
