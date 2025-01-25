@@ -4,6 +4,7 @@ import { Button, Card, Modal } from '@/components/Atoms'
 import { CodeService } from '@/components/Molecules'
 import { Codes, useCode } from '@/context/useCode'
 import { lastCalledNumber } from '@/helpers/findLastCalled'
+import { GUICHE_TOTAL, MODAL_ID } from '@/constants/globals'
 
 export const CheckInActions = () => {
 	const {
@@ -13,9 +14,13 @@ export const CheckInActions = () => {
 		setCalledCode,
 		recallCode,
 		guicheNumber,
+		handleSaveGuicheNumber,
+		startedCode,
 	} = useCode()
 
-	const lastCalledCode = lastCalledNumber(codes)
+	const lastCalledCode = startedCode
+		? Number(startedCode)
+		: lastCalledNumber(codes)
 
 	const handleCallCode = async () => {
 		const response = await callCode(
@@ -64,12 +69,17 @@ export const CheckInActions = () => {
 					</div>
 				</Card>
 				<CodeService code={calledCode} />
-				<Modal
-					id="guiche-modal"
-					title="Escolha o número do guichê"
-					labelButton="Confirmar"
-				>
-					teste
+				<Modal title="Selecione o número do guichê" id={MODAL_ID.GUICHE_MODAL}>
+					{Array.from({ length: GUICHE_TOTAL }).map((_, index) => (
+						<Button
+							key={index}
+							data-hs-overlay={`#${MODAL_ID.GUICHE_MODAL}`}
+							className="w-full"
+							onClick={() => handleSaveGuicheNumber(index + 1)}
+						>
+							{(index + 1).toString().padStart(2, '0')}
+						</Button>
+					))}
 				</Modal>
 			</div>
 		</>

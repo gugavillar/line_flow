@@ -21,15 +21,16 @@ import {
 } from 'firebase/database'
 
 import { database } from '@/services/firebase'
-import { ENDTYPE } from '@/constants/globals'
+import { ENDTYPE, MODAL_ID } from '@/constants/globals'
+import { format } from 'date-fns'
 
 export type Codes = {
 	number: number
 	called_at: string
-	finished_at: string | null
-	started_at: string | null
+	finished_at?: string | null
+	started_at?: string | null
 	guiche: 1 | 2 | 3
-	end_type: `${ENDTYPE}`
+	end_type?: `${ENDTYPE}`
 }
 
 export type CodeFromFirebase = Codes & {
@@ -49,13 +50,15 @@ type ContextType = {
 	recallCode: (refUrl: string) => Promise<void>
 	handleSaveGuicheNumber: (guicheNumber: number) => void
 	guicheNumber: number | null
+	startedCode: string
+	handleSaveInitialCodeNumber: (number: string) => void
 }
 
 const CodeContext = createContext<ContextType>({} as ContextType)
 
-const isExistThisNumber = async (number: number) => {
+const isExistThisNumber = async (number: number, today: string) => {
 	const codesRef = query(
-		ref(database, 'codes'),
+		ref(database, `codes/${today}`),
 		...[orderByChild('number'), equalTo(number)]
 	)
 	const snapshot = await get(codesRef)
@@ -67,9 +70,12 @@ export function CodesProvider({ children }: { children: ReactNode }) {
 	const [codes, setCodes] = useState<Array<CodeFromFirebase>>([])
 	const [guicheNumber, setGuicheNumber] = useState<number | null>(null)
 	const [calledCode, setCalledCode] = useState<CodeFromFirebase | null>(null)
+	const [startedCode, setStartedCode] = useState<string>('')
+
+	const today = format(new Date(), 'dd-MM-yyyy')
 
 	useEffect(() => {
-		const codesRef = ref(database, 'codes')
+		const codesRef = ref(database, `codes/${today}`)
 		onValue(codesRef, (snapshot) => {
 			const newCodes: Array<CodeFromFirebase> = []
 			snapshot.forEach((childSnapshot) => {
@@ -79,36 +85,39 @@ export function CodesProvider({ children }: { children: ReactNode }) {
 			})
 			setCodes(newCodes)
 		})
-	}, [])
+	}, [today])
 
 	const callCode = async (guiche: Codes['guiche'], number: number) => {
 		let newNumber = number
-		const codesRef = ref(database, 'codes')
+		const codesRef = ref(database, `codes/${today}`)
 		const newCode = push(codesRef)
 
-		const calledNumber = await isExistThisNumber(newNumber)
+		const calledNumber = await isExistThisNumber(newNumber, today)
 
 		if (calledNumber) {
 			newNumber = newNumber + 1
+			if (startedCode) {
+				setStartedCode('')
+			}
 			return callCode(guiche, newNumber)
 		}
 
-		await set(newCode, {
+		const codeData = {
 			number: number,
 			called_at: new Date().toISOString(),
 			guiche: guiche,
-		})
+		}
 
-		const response = await get(newCode)
+		await set(newCode, codeData)
 
 		return {
-			...response.val(),
-			id: response.key,
+			...codeData,
+			id: newCode.key as string,
 		}
 	}
 
 	const startService = async (refUrl: string) => {
-		const newCode = ref(database, `codes/${refUrl}`)
+		const newCode = ref(database, `codes/${today}/${refUrl}`)
 
 		await update(newCode, {
 			started_at: new Date().toISOString(),
@@ -123,7 +132,7 @@ export function CodesProvider({ children }: { children: ReactNode }) {
 	}
 
 	const endService = async (refUrl: string, endType: Codes['end_type']) => {
-		const newCode = ref(database, `codes/${refUrl}`)
+		const newCode = ref(database, `codes/${today}/${refUrl}`)
 
 		await update(newCode, {
 			finished_at: new Date().toISOString(),
@@ -132,7 +141,7 @@ export function CodesProvider({ children }: { children: ReactNode }) {
 	}
 
 	const recallCode = async (refUrl: string) => {
-		const newCode = ref(database, `codes/${refUrl}`)
+		const newCode = ref(database, `codes/${today}/${refUrl}`)
 
 		await update(newCode, {
 			called_at: new Date().toISOString(),
@@ -150,7 +159,7 @@ export function CodesProvider({ children }: { children: ReactNode }) {
 			}
 
 			const overlay = await import('preline/preline')
-			overlay.HSOverlay.open('#guiche-modal')
+			overlay.HSOverlay.open(`#${MODAL_ID.GUICHE_MODAL}`)
 		}
 
 		loadModal()
@@ -161,6 +170,8 @@ export function CodesProvider({ children }: { children: ReactNode }) {
 		localStorage.setItem('guiche', String(guicheNumber))
 		setGuicheNumber(guicheNumber)
 	}
+
+	const handleSaveInitialCodeNumber = (number: string) => setStartedCode(number)
 
 	return (
 		<CodeContext.Provider
@@ -174,6 +185,8 @@ export function CodesProvider({ children }: { children: ReactNode }) {
 				recallCode,
 				handleSaveGuicheNumber,
 				guicheNumber,
+				handleSaveInitialCodeNumber,
+				startedCode,
 			}}
 		>
 			{children}

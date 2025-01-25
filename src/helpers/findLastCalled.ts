@@ -18,5 +18,5 @@ export const lastCalled = (items: Array<Codes>) => {
 export const lastCalledNumber = (items: Array<Codes>) => {
 	if (!items.length) return 1
 
-	return Math.max(...items.map((item) => item.number))
+	return Math.max(...items.map((item) => item.number)) + 1
 }

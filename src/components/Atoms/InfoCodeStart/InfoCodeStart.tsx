@@ -1,6 +1,6 @@
 import { formatDateAndHours } from '@/formatters'
 
-export const InfoCodeStart = ({ start }: { start: string | null }) => {
+export const InfoCodeStart = ({ start }: { start?: string | null }) => {
 	if (!start) return null
 	return (
 		<p>

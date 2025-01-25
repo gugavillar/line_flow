@@ -1,16 +1,8 @@
 import { X } from 'lucide-react'
 import { Button } from '../Button'
 import { ModalProps } from './Modal.types'
-import { useCode } from '@/context/useCode'
 
-export const Modal = ({
-	title,
-	labelButton,
-	children,
-	id,
-	...props
-}: ModalProps) => {
-	const { handleSaveGuicheNumber } = useCode()
+export const Modal = ({ title, id, children, ...props }: ModalProps) => {
 	return (
 		<div
 			id={id}
@@ -22,9 +14,7 @@ export const Modal = ({
 					{...props}
 				>
 					<div className="flex items-center justify-between border-b px-4 py-3">
-						<h3 className="font-bold text-gray-800">
-							Selecione o número do guichê
-						</h3>
+						<h3 className="text-xl font-bold text-gray-800">{title}</h3>
 						<Button
 							data-hs-overlay={`#${id}`}
 							className="rounded-full bg-gray-100 text-gray-800 hover:bg-gray-200 focus:bg-gray-200 sm:p-1"
@@ -34,29 +24,7 @@ export const Modal = ({
 						</Button>
 					</div>
 					<div className="overflow-y-auto p-4">
-						<div className="flex w-full gap-8">
-							<Button
-								data-hs-overlay={`#${id}`}
-								className="w-full"
-								onClick={() => handleSaveGuicheNumber(1)}
-							>
-								01
-							</Button>
-							<Button
-								data-hs-overlay={`#${id}`}
-								className="w-full"
-								onClick={() => handleSaveGuicheNumber(2)}
-							>
-								02
-							</Button>
-							<Button
-								data-hs-overlay={`#${id}`}
-								className="w-full"
-								onClick={() => handleSaveGuicheNumber(3)}
-							>
-								03
-							</Button>
-						</div>
+						<div className="flex w-full gap-8">{children}</div>
 					</div>
 				</div>
 			</div>
