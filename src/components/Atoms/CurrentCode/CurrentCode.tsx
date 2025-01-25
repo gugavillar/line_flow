@@ -38,12 +38,12 @@ export const CurrentCode = () => {
 				alt="logo"
 				className="w-full"
 			/>
-			<h2 className="text-4xl font-semibold">Senha</h2>
+			<h2 className="text-7xl font-semibold">SENHA</h2>
 			<h1 className={twMerge('text-9xl font-bold', bounce && 'animate-bounce')}>
 				{activeCode}
 			</h1>
 			{lastCalledCode?.guiche && (
-				<h3 className="text-6xl font-semibold">
+				<h3 className="text-7xl font-semibold">
 					Guichê {lastCalledCode?.guiche}
 				</h3>
 			)}

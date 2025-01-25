@@ -6,14 +6,14 @@ export default function PanelPage() {
 			<div>
 				<video controls={false} autoPlay muted loop className="w-full">
 					<source
-						src="/assets/reuniao dos secretários 720.mp4"
-						type="video/mp4"
+						src="/assets/reuniao dos secretários 720.webm"
+						type="video/webm"
 					/>
 				</video>
 			</div>
 			<CurrentCode />
 			<div className="flex h-full flex-col bg-brand p-4 text-white">
-				<h3 className="text-3xl font-semibold">Senhas anteriores</h3>
+				<h3 className="text-5xl font-semibold">SENHAS ANTERIORES</h3>
 				<PassedCode />
 			</div>
 		</div>
