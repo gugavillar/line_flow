@@ -31,7 +31,13 @@ export const CurrentCode = () => {
 
 	return (
 		<div className="row-span-2 flex h-full flex-col items-center justify-center gap-6 bg-brand p-4 text-white">
-			<Image width={300} height={300} src="/assets/logo.png" alt="logo" />
+			<Image
+				width={300}
+				height={300}
+				src="/assets/logo.png"
+				alt="logo"
+				className="w-full"
+			/>
 			<h2 className="text-4xl font-semibold">Senha</h2>
 			<h1 className={twMerge('text-9xl font-bold', bounce && 'animate-bounce')}>
 				{activeCode}

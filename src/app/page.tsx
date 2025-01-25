@@ -3,8 +3,8 @@ import { CurrentCode, PassedCode } from '@/components/Atoms'
 export default function PanelPage() {
 	return (
 		<div className="grid size-full grid-cols-[75%_25%] grid-rows-[75%_25%]">
-			<div className="size-max">
-				<video controls={false} autoPlay muted loop>
+			<div>
+				<video controls={false} autoPlay muted loop className="w-full">
 					<source
 						src="/assets/reuniao dos secretários 720.mp4"
 						type="video/mp4"
