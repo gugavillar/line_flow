@@ -46,9 +46,9 @@ export const CheckInActions = () => {
 	return (
 		<>
 			<h1 className="text-4xl font-bold">Guichê {guicheNumber}</h1>
-			<div className="flex size-full flex-col items-center justify-center gap-16 p-4 lg:flex-row">
+			<div className="flex size-full flex-col items-center justify-center gap-16 py-8 lg:flex-row">
 				<Card heading="Controle de senha">
-					<div className="flex h-full flex-col justify-evenly">
+					<div className="flex h-full flex-col justify-evenly gap-4 py-5">
 						<Button onClick={handleCallCode} disabled={!!calledCode?.number}>
 							Chamar próxima senha
 						</Button>

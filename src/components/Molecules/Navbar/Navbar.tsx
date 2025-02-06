@@ -15,9 +15,9 @@ export const Navbar = ({ label, url }: NavbarProps) => {
 		setInitialNumber('')
 	}
 	return (
-		<header className="relative flex w-full flex-wrap bg-brand py-4 text-sm sm:flex-nowrap sm:justify-start">
-			<nav className="mx-auto w-full max-w-[85rem] px-4 sm:flex sm:items-center sm:justify-between">
-				<div className="flex items-center justify-between text-white">
+		<header className="relative flex w-full flex-wrap bg-brand px-8 py-4 text-sm sm:flex-nowrap sm:justify-start">
+			<nav className="flex w-full items-center justify-between">
+				<div className="flex w-full items-center justify-between text-white">
 					<LogoLink label={label} url={url} />
 					<div className="sm:hidden">
 						<button
